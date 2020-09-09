@@ -1,0 +1,122 @@
+<!DOCTYPE html>
+<html lang="en" class="no-js">
+
+<head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>宁忻阳博客</title>
+    <meta name="description" content="Effect inspiration for opening an image grid item." />
+    <meta name="keywords" content="image grid, effect, inspiration, css, javascript, animation, masonry" />
+    <meta name="author" content="Codrops" />
+    <link rel="shortcut icon" href="favicon.ico">
+
+    <link rel="stylesheet" type="text/css" href="/public/static/index/css/normalize.css" />
+    <link rel="stylesheet" type="text/css" href="/public/static/index/fonts/font-awesome-4.3.0/css/font-awesome.min.css" />
+    <link rel="stylesheet" type="text/css" href="/public/static/index/css/demo.css" />
+
+    <!--必要样式-->
+    <link rel="stylesheet" type="text/css" href="/public/static/index/css/style1.css" />
+
+    <script src="/public/static/index/js/modernizr-custom.js"></script>
+</head>
+
+<body class="demo-1">
+
+<div class="container">
+
+    <header class="codrops-header">
+        <nav class="codrops-demos">
+           <h1 style="color: #D2A8A1">宁忻阳博客</h1>
+        </nav>
+    </header>
+
+    <div class="content">
+        <div class="grid">
+                {foreach $list as $vo}
+                {if $vo['end'] == 'mp4'}
+                <div class="grid__item" data-size="{$vo.size}">
+                        <video class="img-wrap"  controls="controls"  poster="{$vo.img}.jpg" width="250" height="500">
+                            <source src="{$vo.img}" type="video/mp4" />
+                        </video>
+                </div>
+<!--                    <div class="grid__item" data-size="{$vo.size}">-->
+<!--                        <a href="{$vo.img}" class="img-wrap">-->
+<!--                            <img src="{$vo.thumb}" alt="{$vo.title}" />-->
+<!--                            <div class="description description&#45;&#45;grid">{$vo.title}<p>时间：{$vo.time}</p><p>第{$vo.day}天</p></div>-->
+<!--                        </a>-->
+<!--                    </div>-->
+                {else/}
+                <div class="grid__item" data-size="{$vo.size}">
+                    <a href="{$vo.img}" class="img-wrap"><img src="{$vo.thumb}" alt="{$vo.title}" />
+                        <div class="description description--grid">{$vo.title}<p>时间：{$vo.time}</p><p>第{$vo.day}天</p></div>
+                    </a>
+                </div>
+                {/if}
+
+           {/foreach}
+        </div>
+        <!-- /grid -->
+        <div class="preview">
+            <button class="action action--close"><i class="fa fa-times"></i><span class="text-hidden">Close</span></button>
+            <div class="description description--preview"></div>
+        </div>
+        <!-- /preview -->
+    </div>
+    <!-- /content -->
+
+</div>
+<!-- /container -->
+<script type="text/javascript" src="/public/static/index/js/imagesloaded.pkgd.min.js"></script>
+<script type="text/javascript" src="/public/static/index/js/masonry.pkgd.min.js"></script>
+<script type="text/javascript" src="/public/static/index/js/classie.js"></script>
+<script type="text/javascript" src="/public/static/index/js/main.js"></script>
+<script type="text/javascript">
+    (function() {
+        // create SVG circle overlay and append it to the preview element
+        function createCircleOverlay(previewEl) {
+            var dummy = document.createElementNS('http://www.w3.org/2000/svg', 'svg');
+            dummy.setAttributeNS(null, 'version', '1.1');
+            dummy.setAttributeNS(null, 'width', '100%');
+            dummy.setAttributeNS(null, 'height', '100%');
+            dummy.setAttributeNS(null, 'class', 'overlay');
+            var g = document.createElementNS('http://www.w3.org/2000/svg', 'g');
+            var circle = document.createElementNS("http://www.w3.org/2000/svg", "circle");
+            circle.setAttributeNS(null, 'cx', 0);
+            circle.setAttributeNS(null, 'cy', 0);
+            circle.setAttributeNS(null, 'r', Math.sqrt(Math.pow(previewEl.offsetWidth,2) + Math.pow(previewEl.offsetHeight,2)));
+            dummy.appendChild(g);
+            g.appendChild(circle);
+            previewEl.appendChild(dummy);
+        }
+
+        new GridFx(document.querySelector('.grid'), {
+            onInit : function(instance) {
+                createCircleOverlay(instance.previewEl);
+            },
+            onResize : function(instance) {
+                instance.previewEl.querySelector('svg circle').setAttributeNS(null, 'r', Math.sqrt(Math.pow(instance.previewEl.offsetWidth,2) + Math.pow(instance.previewEl.offsetHeight,2)));
+            },
+            onOpenItem : function(instance, item) {
+                // item's image
+                var gridImg = item.querySelector('img'),
+                    gridImgOffset = gridImg.getBoundingClientRect(),
+                    win = {width: document.documentElement.clientWidth, height: window.innerHeight},
+                    SVGCircleGroupEl = instance.previewEl.querySelector('svg > g'),
+                    SVGCircleEl = SVGCircleGroupEl.querySelector('circle');
+
+                SVGCircleEl.setAttributeNS(null, 'r', Math.sqrt(Math.pow(instance.previewEl.offsetWidth,2) + Math.pow(instance.previewEl.offsetHeight,2)));
+                // set the transform for the SVG g node. This will animate the circle overlay. The origin of the circle depends on the position of the clicked item.
+                if( gridImgOffset.left + gridImg.offsetWidth/2 < win.width/2 ) {
+                    SVGCircleGroupEl.setAttributeNS(null, 'transform', 'translate(' + win.width + ', ' + (gridImgOffset.top + gridImg.offsetHeight/2 < win.height/2 ? win.height : 0) + ')');
+                }
+                else {
+                    SVGCircleGroupEl.setAttributeNS(null, 'transform', 'translate(0, ' + (gridImgOffset.top + gridImg.offsetHeight/2 < win.height/2 ? win.height : 0) + ')');
+                }
+            }
+        });
+    })();
+</script>
+
+</body>
+</html>

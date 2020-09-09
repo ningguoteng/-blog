@@ -1,0 +1,181 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+
+    <title>{$title}</title>
+
+    <link rel="shortcut icon" href="favicon.ico"> <link href="__CSS__/bootstrap.min.css?v=3.3.6" rel="stylesheet">
+    <link href="__CSS__/font-awesome.css?v=4.4.0" rel="stylesheet">
+    <link href="__CSS__/plugins/iCheck/custom.css" rel="stylesheet">
+    <link href="__CSS__/animate.css" rel="stylesheet">
+    <link href="__CSS__/style.css?v=4.1.0" rel="stylesheet">
+
+    <link rel="stylesheet" type="text/css" href="__CSS__/plugins/webuploader/webuploader.css">
+    <link rel="stylesheet" type="text/css" href="__CSS__/demo/webuploader-demo.css">
+
+    <!-- Sweet Alert -->
+    <link href="__CSS__/plugins/sweetalert/sweetalert.css" rel="stylesheet">
+
+</head>
+
+<body class="gray-bg">
+<div class="wrapper wrapper-content animated fadeInRight">
+
+    <div class="row">
+        <div class="col-sm-12">
+            <div class="ibox float-e-margins">
+                <div class="ibox-title">
+                    <h5>添加内容 </h5>
+
+                </div>
+                <div class="ibox-content">
+<!--                        <form action="/admin.php/Plugin/add" enctype="multipart/form-data" method="post" class="form-horizontal">-->
+                    <form method="post" id="form" class="form-horizontal">
+                        <div class="form-group">
+                            <label class="col-sm-2 control-label">标题</label>
+
+                            <div class="col-sm-5">
+                                <input type="text" name="title" class="form-control" value="{$info['title']}">
+                            </div>
+                        </div>
+
+                        <div class="form-group">
+                            <label class="col-sm-2 control-label">时间</label>
+                            <div class="col-sm-5">
+                                <input name="time" class="form-control layer-date" placeholder="2020-02-28 09:22:00" onclick="laydate({istime: true, format: 'YYYY-MM-DD hh:mm:ss'})"  value="{$info['time'] |default=' '}">
+                                <label class="laydate-icon"></label>
+                            </div>
+                        </div>
+
+
+                        <div class="form-group">
+                            <label class="col-sm-2 control-label">图片</label>
+                            <div class="col-sm-5">
+                               <div class="currentUrl" style="display: none;">{$info['img']}</div>
+
+                                     <img  src="{$info['img']}" width="200" height="200">
+                            </div>
+                        </div>
+                        <div class="ibox-content">
+                            <div class="page-container">
+                                <div id="uploader" class="wu-example">
+                                    <div class="queueList">
+                                        <div id="dndArea" class="placeholder">
+                                            <div id="filePicker"></div>
+                                            <p>或将文件拖到这里</p>
+                                        </div>
+                                    </div>
+                                    <div class="statusBar" style="display:none;">
+                                        <div class="progress">
+                                            <span class="text">0%</span>
+                                            <span class="percentage"></span>
+                                        </div>
+                                        <div class="info"></div>
+                                        <div class="btns">
+                                            <div id="filePicker2"></div>
+                                            <div class="uploadBtn">开始上传</div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <input type="hidden" name="id" value="{$info.id}" >
+                        <div class="form-group">
+                            <div class="col-sm-4 col-sm-offset-2">
+                                <button class="btn btn-primary" type="button">保存内容</button>
+                                <button class="btn btn-white" type="button">取消</button>
+                            </div>
+                        </div>
+
+<!--                        <div class="form-group">-->
+<!--                            <div class="col-sm-4 col-sm-offset-2">-->
+<!--                                <input type="submit" value="保存内容" class="btn btn-primary" />-->
+<!--&lt;!&ndash;                                <button class="btn btn-primary" type="button">保存内容</button>&ndash;&gt;-->
+<!--                                <button class="btn btn-white" type="button">取消</button>-->
+<!--                            </div>-->
+<!--                        </div>-->
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+
+<!-- 全局js -->
+<script src="__JS__/jquery.min.js?v=2.1.4"></script>
+<script src="__JS__/bootstrap.min.js?v=3.3.6"></script>
+
+<!-- 自定义js -->
+<script src="__JS__/content.js?v=1.0.0"></script>
+
+<!-- Sweet alert -->
+<script src="__JS__/plugins/sweetalert/sweetalert.min.js"></script>
+
+<!-- layerDate plugin javascript -->
+<script src="__JS__/plugins/layer/laydate/laydate.js"></script>
+<script type="text/javascript" src="__JS__/plugins/webuploader/webuploader.js"></script>
+<!-- Web Uploader -->
+<script type="text/javascript">
+    // 添加全局站点信息
+
+    var BASE_URL = '/public/static/admin/js/plugins/webuploader';
+
+</script>
+<!--<script src="__JS__/plugins/webuploader/webuploader.min.js"></script>-->
+
+<script src="__JS__/demo/webuploader-demo.js"></script>
+<script>
+
+    // console.log(uploader);
+    $(document).ready(function () {
+        //选择框赋值
+        // $(".industry_id").val("{$info['industry_id']}");
+        $(".btn-primary").click(function(){
+            var form = $("#form").serialize();
+
+            if($('.imgWrap').attr('data-url')){
+                form = form + '&img='+$('.imgWrap').attr('data-url');
+            }else{
+                form = form + '&img='+$('.currentUrl').text();
+            }
+
+
+            $.post("/admin.php/Content/add",
+                form,
+                function(data,status){
+                    if(data.errorcode == 200){
+                        swal({
+                            title: "成功",
+                            text: "",
+                            type: "success"
+                        },function(){
+                            window.history.back();
+                        });
+                    }else{
+                        swal({
+                            title: "失败",
+                            text: data.error,
+                            type: "error"
+                        });
+                    }
+                });
+        });
+        $(".btn-white").click(function(){
+            window.history.back();
+        });
+    //
+    });
+</script>
+
+
+
+</body>
+
+</html>
