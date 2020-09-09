@@ -11,15 +11,15 @@
 
 return [
     // 数据库类型
-    'type'            => 'mysql',
+    'type'            => 'mysqli',
     // 服务器地址
     'hostname'        => '127.0.0.1',
     // 数据库名
-    'database'        => 'nxy',
+    'database'        => 'douniwan',
     // 用户名
-    'username'        => 'nxy',
+    'username'        => 'douniwan',
     // 密码
-    'password'        => 'ningxinyang',
+    'password'        => 'douniwan',
     //    // 端口
     'hostport'        => '',
     // 连接dsn
